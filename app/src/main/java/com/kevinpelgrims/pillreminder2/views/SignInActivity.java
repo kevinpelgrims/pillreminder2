@@ -1,4 +1,4 @@
-package com.kevinpelgrims.pillreminder2;
+package com.kevinpelgrims.pillreminder2.views;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.kevinpelgrims.pillreminder2.R;
 
 public class SignInActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SIGN_IN = 100;

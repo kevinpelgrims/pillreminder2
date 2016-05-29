@@ -1,4 +1,4 @@
-package com.kevinpelgrims.pillreminder2;
+package com.kevinpelgrims.pillreminder2.views;
 
 import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kevinpelgrims.pillreminder2.R;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
 
 import java.util.Calendar;

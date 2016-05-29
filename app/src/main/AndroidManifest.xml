@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".views.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -17,9 +17,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SignInActivity"/>
+        <activity android:name=".views.SignInActivity"/>
 
-        <activity android:name=".ReminderActivity"/>
+        <activity android:name=".views.ReminderActivity"/>
     </application>
 
 </manifest>
