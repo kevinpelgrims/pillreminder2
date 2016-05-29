@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Pill Reminder</string>
+
+    <string name="reminder_title">New reminder</string>
+    <string name="reminder_alarm">Alarm</string>
+    <string name="reminder_name">Name</string>
+    <string name="reminder_note">Note</string>
 </resources>
