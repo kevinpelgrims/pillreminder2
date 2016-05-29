@@ -64,6 +64,12 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <Button
+            android:id="@+id/add_reminder_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"/>
+
     </LinearLayout>
 
 </LinearLayout>
