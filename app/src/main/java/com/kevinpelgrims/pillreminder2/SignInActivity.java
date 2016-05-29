@@ -118,6 +118,7 @@ public class SignInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //TODO: Sign in succeeded
+                            finish();
                         }
                         else {
                             //TODO: Sign in failed
