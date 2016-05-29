@@ -14,6 +14,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ReminderActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+    private static final String ARG_HOUR = "hour";
+    private static final String ARG_MINUTE = "minute";
+
     @BindView(R.id.add_reminder_alarm_time) TextView alarmTimeText;
 
     private int selectedHour;
@@ -25,10 +28,26 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
         setContentView(R.layout.activity_reminder);
         ButterKnife.bind(this);
 
-        selectedHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        selectedMinute = 0;
+        if (savedInstanceState != null
+                && savedInstanceState.containsKey(ARG_HOUR)
+                && savedInstanceState.containsKey(ARG_MINUTE)) {
+            selectedHour = savedInstanceState.getInt(ARG_HOUR);
+            selectedMinute = savedInstanceState.getInt(ARG_MINUTE);
+        }
+        else {
+            selectedHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            selectedMinute = 0;
+            showTimePickerDialog();
+        }
+
         updateAlarmTimeText();
-        showTimePickerDialog();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(ARG_HOUR, selectedHour);
+        outState.putInt(ARG_MINUTE, selectedMinute);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -39,7 +58,7 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
     }
 
     @OnClick(R.id.add_reminder_alarm_time)
-    public void changeAlarmTime() {
+    void changeAlarmTime() {
         showTimePickerDialog();
     }
 
