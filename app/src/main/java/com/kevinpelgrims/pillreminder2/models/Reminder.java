@@ -7,6 +7,9 @@ public class Reminder {
     private String name;
     private String note;
 
+    public Reminder() {
+    }
+
     public Reminder(String userId, Integer hour, Integer minute, String name, String note) {
         this.userId = userId;
         this.hour = hour;
