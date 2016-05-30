@@ -41,7 +41,7 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
         ButterKnife.bind(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance().getReference().child("reminders");
 
         if (savedInstanceState != null
                 && savedInstanceState.containsKey(ARG_HOUR)
