@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kevinpelgrims.pillreminder2.R;
+import com.kevinpelgrims.pillreminder2.helpers.FormattingHelper;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +35,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ViewHo
         Reminder reminder = reminders.get(position);
 
         holder.name.setText(reminder.getName());
-        holder.time.setText(String.format(Locale.getDefault(), "%02d:%02d", reminder.getHour(), reminder.getMinute()));
+        holder.time.setText(FormattingHelper.formatTime(reminder.getHour(), reminder.getMinute()));
         holder.note.setText(reminder.getNote());
     }
 

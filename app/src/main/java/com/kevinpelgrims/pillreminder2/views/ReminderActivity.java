@@ -8,13 +8,13 @@ import android.widget.TimePicker;
 
 import com.kevinpelgrims.pillreminder2.PillReminderApplication;
 import com.kevinpelgrims.pillreminder2.R;
+import com.kevinpelgrims.pillreminder2.helpers.FormattingHelper;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
 import com.kevinpelgrims.pillreminder2.repositories.RemindersRepository;
 import com.kevinpelgrims.pillreminder2.repositories.RepositoryCallback;
 import com.kevinpelgrims.pillreminder2.repositories.UsersRepository;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -102,6 +102,6 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
     }
 
     private void updateAlarmTimeText() {
-        alarmTimeText.setText(String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute));
+        alarmTimeText.setText(FormattingHelper.formatTime(selectedHour, selectedMinute));
     }
 }
