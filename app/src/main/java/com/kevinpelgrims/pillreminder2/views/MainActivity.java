@@ -1,21 +1,16 @@
 package com.kevinpelgrims.pillreminder2.views;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.kevinpelgrims.pillreminder2.PillReminderApplication;
 import com.kevinpelgrims.pillreminder2.R;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
 import com.kevinpelgrims.pillreminder2.repositories.RemindersRepository;
+import com.kevinpelgrims.pillreminder2.repositories.RepositoryCallback;
 import com.kevinpelgrims.pillreminder2.repositories.UsersRepository;
 import com.kevinpelgrims.pillreminder2.views.adapters.ReminderAdapter;
 
@@ -34,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.reminders_list) RecyclerView remindersList;
 
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference database;
-
     private List<Reminder> reminders = new ArrayList<>();
 
     @Override
@@ -47,10 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-
         if (checkUser()) {
-            database = FirebaseDatabase.getInstance().getReference();
             initRemindersList();
         }
     }
@@ -61,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkUser() {
-        if (firebaseAuth.getCurrentUser() == null) {
+        if (!usersRepository.isUserSignedIn()) {
             //TODO: startForResult and deal with successful sign in
             startActivity(new Intent(this, SignInActivity.class));
             return false;
@@ -82,22 +71,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadReminders() {
-        final String userId = firebaseAuth.getCurrentUser().getUid();
-        database.child("users/" + userId + "/reminders/").addListenerForSingleValueEvent(new ValueEventListener() {
+        final String userId = usersRepository.getCurrentUserId();
+        remindersRepository.getReminders(userId, new RepositoryCallback<List<Reminder>>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Reminder> reminders = new ArrayList<Reminder>();
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    reminders.add(snapshot.getValue(Reminder.class));
-                }
-
+            public void success(List<Reminder> reminders) {
                 addDataToList(reminders);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //TODO
+            public void failure(Exception error) {
+                //TODO: Failure
             }
         });
     }
