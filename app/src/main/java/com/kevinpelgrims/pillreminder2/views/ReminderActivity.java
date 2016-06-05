@@ -1,8 +1,8 @@
 package com.kevinpelgrims.pillreminder2.views;
 
 import android.app.TimePickerDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
