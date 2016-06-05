@@ -10,13 +10,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kevinpelgrims.pillreminder2.PillReminderApplication;
 import com.kevinpelgrims.pillreminder2.R;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
+import com.kevinpelgrims.pillreminder2.repositories.RemindersRepository;
+import com.kevinpelgrims.pillreminder2.repositories.UsersRepository;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +30,9 @@ import butterknife.OnClick;
 public class ReminderActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     private static final String ARG_HOUR = "hour";
     private static final String ARG_MINUTE = "minute";
+
+    @Inject UsersRepository usersRepository;
+    @Inject RemindersRepository remindersRepository;
 
     @BindView(R.id.add_reminder_alarm_time) TextView alarmTimeText;
     @BindView(R.id.add_reminder_pill_name) TextView pillNameText;
@@ -38,6 +46,8 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PillReminderApplication.getComponent(this).inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder);
         ButterKnife.bind(this);

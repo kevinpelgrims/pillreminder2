@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.kevinpelgrims.pillreminder2.PillReminderApplication;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -22,10 +23,15 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kevinpelgrims.pillreminder2.R;
+import com.kevinpelgrims.pillreminder2.repositories.RepositoryCallback;
+import com.kevinpelgrims.pillreminder2.repositories.UsersRepository;
 import com.kevinpelgrims.pillreminder2.models.User;
+import javax.inject.Inject;
 
 public class SignInActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SIGN_IN = 100;
+
+    @Inject UsersRepository usersRepository;
 
     private GoogleApiClient googleApiClient;
     private FirebaseAuth firebaseAuth;
@@ -34,6 +40,7 @@ public class SignInActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PillReminderApplication.getComponent(this).inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 

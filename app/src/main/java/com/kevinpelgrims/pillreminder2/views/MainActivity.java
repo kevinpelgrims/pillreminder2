@@ -12,18 +12,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kevinpelgrims.pillreminder2.PillReminderApplication;
 import com.kevinpelgrims.pillreminder2.R;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
+import com.kevinpelgrims.pillreminder2.repositories.RemindersRepository;
+import com.kevinpelgrims.pillreminder2.repositories.UsersRepository;
 import com.kevinpelgrims.pillreminder2.views.adapters.ReminderAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
+    @Inject UsersRepository usersRepository;
+    @Inject RemindersRepository remindersRepository;
+
     @BindView(R.id.reminders_list) RecyclerView remindersList;
 
     private FirebaseAuth firebaseAuth;
@@ -33,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PillReminderApplication.getComponent(this).inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
