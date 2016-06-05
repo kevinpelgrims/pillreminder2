@@ -19,7 +19,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kevinpelgrims.pillreminder2.R;
+import com.kevinpelgrims.pillreminder2.models.User;
 
 public class SignInActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SIGN_IN = 100;
@@ -27,6 +30,7 @@ public class SignInActivity extends AppCompatActivity {
     private GoogleApiClient googleApiClient;
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,8 @@ public class SignInActivity extends AppCompatActivity {
                 signInWithGoogle();
             }
         });
+
+        database = FirebaseDatabase.getInstance().getReference().child("users");
 
         setUpGoogleApiClient();
         setUpFirebaseAuth();
@@ -118,7 +124,19 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //TODO: Sign in succeeded
+                            // Sign in succeeded, store user info in the database
+                            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+                            if (currentUser != null) {
+                                String photoUrl = currentUser.getPhotoUrl() != null
+                                        ? currentUser.getPhotoUrl().toString()
+                                        : null;
+                                User user = new User(currentUser.getEmail(),
+                                        currentUser.getDisplayName(),
+                                        photoUrl);
+                                database.child(currentUser.getUid()).setValue(user);
+                            }
+
                             finish();
                         }
                         else {
