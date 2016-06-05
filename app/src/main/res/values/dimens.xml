@@ -3,4 +3,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="default_margin">8dp</dimen>
+
+    <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_big">20sp</dimen>
 </resources>
