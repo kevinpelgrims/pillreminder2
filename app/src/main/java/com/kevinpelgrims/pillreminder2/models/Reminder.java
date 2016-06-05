@@ -1,5 +1,10 @@
 package com.kevinpelgrims.pillreminder2.models;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Reminder {
     private String userId;
     private Integer hour;
@@ -18,6 +23,10 @@ public class Reminder {
         this.note = note;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public Integer getHour() {
         return hour;
     }
@@ -32,5 +41,17 @@ public class Reminder {
 
     public String getNote() {
         return note;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("userId", userId);
+        result.put("hour", hour);
+        result.put("minute", minute);
+        result.put("name", name);
+        result.put("note", note);
+
+        return result;
     }
 }

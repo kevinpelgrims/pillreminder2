@@ -14,7 +14,9 @@ import com.kevinpelgrims.pillreminder2.R;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +43,7 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
         ButterKnife.bind(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance().getReference().child("reminders");
+        database = FirebaseDatabase.getInstance().getReference();
 
         if (savedInstanceState != null
                 && savedInstanceState.containsKey(ARG_HOUR)
@@ -82,7 +84,14 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
         final String userId = firebaseAuth.getCurrentUser().getUid();
         final Reminder reminder = new Reminder(userId, selectedHour, selectedMinute, pillNameText.getText().toString(), noteText.getText().toString());
 
-        database.push().setValue(reminder, new DatabaseReference.CompletionListener() {
+        String key = database.child("reminders").push().getKey();
+        Map<String, Object> reminderValues = reminder.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/reminders/" + key, reminderValues);
+        childUpdates.put("/users/" + userId + "/reminders/" + key, reminderValues);
+
+        database.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
