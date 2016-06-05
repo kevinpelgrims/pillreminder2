@@ -6,20 +6,15 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.kevinpelgrims.pillreminder2.PillReminderApplication;
 import com.kevinpelgrims.pillreminder2.R;
 import com.kevinpelgrims.pillreminder2.models.Reminder;
 import com.kevinpelgrims.pillreminder2.repositories.RemindersRepository;
+import com.kevinpelgrims.pillreminder2.repositories.RepositoryCallback;
 import com.kevinpelgrims.pillreminder2.repositories.UsersRepository;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -38,9 +33,6 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
     @BindView(R.id.add_reminder_pill_name) TextView pillNameText;
     @BindView(R.id.add_reminder_note) TextView noteText;
 
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference database;
-
     private int selectedHour;
     private int selectedMinute;
 
@@ -51,9 +43,6 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder);
         ButterKnife.bind(this);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance().getReference();
 
         if (savedInstanceState != null
                 && savedInstanceState.containsKey(ARG_HOUR)
@@ -91,23 +80,18 @@ public class ReminderActivity extends AppCompatActivity implements TimePickerDia
 
     @OnClick(R.id.add_reminder_save)
     void saveReminder() {
-        final String userId = firebaseAuth.getCurrentUser().getUid();
+        final String userId = usersRepository.getCurrentUserId();
         final Reminder reminder = new Reminder(userId, selectedHour, selectedMinute, pillNameText.getText().toString(), noteText.getText().toString());
 
-        String key = database.child("reminders").push().getKey();
-        Map<String, Object> reminderValues = reminder.toMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/reminders/" + key, reminderValues);
-        childUpdates.put("/users/" + userId + "/reminders/" + key, reminderValues);
-
-        database.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+        remindersRepository.saveReminder(reminder, userId, new RepositoryCallback<Reminder>() {
             @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError == null) {
-                    // Success!
-                    finish();
-                }
+            public void success(Reminder reminder) {
+                finish();
+            }
+
+            @Override
+            public void failure(Exception error) {
+                //TODO: Failed to save reminder
             }
         });
     }

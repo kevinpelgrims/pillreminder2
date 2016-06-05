@@ -45,4 +45,8 @@ public class UsersRepository {
                     }
                 });
     }
+
+    public String getCurrentUserId() {
+        return firebaseAuth.getCurrentUser() != null ? firebaseAuth.getCurrentUser().getUid() : null;
+    }
 }
