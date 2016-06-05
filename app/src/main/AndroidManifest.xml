@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme"
         android:name=".PillReminderApplication">
 
-        <activity android:name=".views.MainActivity">
+        <activity android:name=".views.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -18,9 +18,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".views.SignInActivity"/>
+        <activity android:name=".views.activities.SignInActivity"/>
 
-        <activity android:name=".views.ReminderActivity"/>
+        <activity android:name=".views.activities.ReminderActivity"/>
     </application>
 
 </manifest>

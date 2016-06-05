@@ -1,8 +1,8 @@
 package com.kevinpelgrims.pillreminder2.di;
 
-import com.kevinpelgrims.pillreminder2.views.MainActivity;
-import com.kevinpelgrims.pillreminder2.views.ReminderActivity;
-import com.kevinpelgrims.pillreminder2.views.SignInActivity;
+import com.kevinpelgrims.pillreminder2.views.activities.MainActivity;
+import com.kevinpelgrims.pillreminder2.views.activities.ReminderActivity;
+import com.kevinpelgrims.pillreminder2.views.activities.SignInActivity;
 
 import javax.inject.Singleton;
 

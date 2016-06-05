@@ -1,4 +1,4 @@
-package com.kevinpelgrims.pillreminder2.views;
+package com.kevinpelgrims.pillreminder2.views.activities;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
