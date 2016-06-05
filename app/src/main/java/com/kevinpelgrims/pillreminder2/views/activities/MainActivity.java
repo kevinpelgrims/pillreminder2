@@ -24,6 +24,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_SIGN_IN = 100;
+
     @Inject UsersRepository usersRepository;
     @Inject RemindersRepository remindersRepository;
 
@@ -44,6 +46,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_SIGN_IN && resultCode == RESULT_OK) {
+            initRemindersList();
+        }
+    }
+
     @OnClick(R.id.reminders_add)
     public void addReminder() {
         startActivity(new Intent(MainActivity.this, ReminderActivity.class));
@@ -51,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean checkUser() {
         if (!usersRepository.isUserSignedIn()) {
-            //TODO: startForResult and deal with successful sign in
-            startActivity(new Intent(this, SignInActivity.class));
+            startActivityForResult(new Intent(this, SignInActivity.class), REQUEST_CODE_SIGN_IN);
             return false;
         }
         else {

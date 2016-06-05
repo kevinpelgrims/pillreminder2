@@ -82,7 +82,7 @@ public class SignInActivity extends AppCompatActivity {
         usersRepository.signInWithGoogle(account.getIdToken(), new RepositoryCallback<Void>() {
             @Override
             public void success(Void result) {
-                finish();
+                handleSuccessfulSignIn();
             }
 
             @Override
@@ -90,5 +90,10 @@ public class SignInActivity extends AppCompatActivity {
                 //TODO: Sign in failed
             }
         });
+    }
+
+    private void handleSuccessfulSignIn() {
+        setResult(RESULT_OK);
+        finish();
     }
 }
