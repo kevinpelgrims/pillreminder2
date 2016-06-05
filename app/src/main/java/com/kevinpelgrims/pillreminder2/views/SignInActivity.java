@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -13,20 +12,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.kevinpelgrims.pillreminder2.PillReminderApplication;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.kevinpelgrims.pillreminder2.R;
 import com.kevinpelgrims.pillreminder2.repositories.RepositoryCallback;
 import com.kevinpelgrims.pillreminder2.repositories.UsersRepository;
-import com.kevinpelgrims.pillreminder2.models.User;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SignInActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SIGN_IN = 100;
@@ -34,33 +27,16 @@ public class SignInActivity extends AppCompatActivity {
     @Inject UsersRepository usersRepository;
 
     private GoogleApiClient googleApiClient;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PillReminderApplication.getComponent(this).inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signInWithGoogle();
-            }
-        });
-
-        database = FirebaseDatabase.getInstance().getReference().child("users");
+        ButterKnife.bind(this);
 
         setUpGoogleApiClient();
-        setUpFirebaseAuth();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(authStateListener);
     }
 
     @Override
@@ -71,7 +47,7 @@ public class SignInActivity extends AppCompatActivity {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 final GoogleSignInAccount account = result.getSignInAccount();
-                signInToFirebase(account);
+                signInWithGoogleAccount(account);
             }
             else {
                 //TODO
@@ -79,10 +55,10 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStop() {
-        firebaseAuth.removeAuthStateListener(authStateListener);
-        super.onStop();
+    @OnClick(R.id.sign_in_button)
+    void signInWithGoogle() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN);
     }
 
     private void setUpGoogleApiClient() {
@@ -102,54 +78,17 @@ public class SignInActivity extends AppCompatActivity {
                 .build();
     }
 
-    private void setUpFirebaseAuth() {
-        firebaseAuth = FirebaseAuth.getInstance();
-
-        authStateListener = new FirebaseAuth.AuthStateListener() {
+    private void signInWithGoogleAccount(GoogleSignInAccount account) {
+        usersRepository.signInWithGoogle(account.getIdToken(), new RepositoryCallback<Void>() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    //TODO: User signed in
-                }
-                else {
-                    //TODO: User signed out
-                }
+            public void success(Void result) {
+                finish();
             }
-        };
-    }
 
-    private void signInWithGoogle() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN);
-    }
-
-    private void signInToFirebase(GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in succeeded, store user info in the database
-                            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-                            if (currentUser != null) {
-                                String photoUrl = currentUser.getPhotoUrl() != null
-                                        ? currentUser.getPhotoUrl().toString()
-                                        : null;
-                                User user = new User(currentUser.getEmail(),
-                                        currentUser.getDisplayName(),
-                                        photoUrl);
-                                database.child(currentUser.getUid()).setValue(user);
-                            }
-
-                            finish();
-                        }
-                        else {
-                            //TODO: Sign in failed
-                        }
-                    }
-                });
+            @Override
+            public void failure(Exception error) {
+                //TODO: Sign in failed
+            }
+        });
     }
 }
